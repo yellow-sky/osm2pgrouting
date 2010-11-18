@@ -1,0 +1,14 @@
+Package: osm2pgrouting
+Version: 0.1-4
+Architecture: amd64
+Maintainer: Frederic Junod <frederic.junod@camptocamp.com>
+Installed-Size: 140
+Depends: libc6 (>= 2.4), libexpat1 (>= 1.95.8), libgcc1 (>= 1:4.1.1), libpq5 (>= 8.4~0cvs20090328), libstdc++6 (>= 4.1.1)
+Section: utils
+Priority: extra
+Homepage: http://pgrouting.postlbs.org/wiki/tools/osm2pgrouting
+Description: Tool to import OpenStreetMap data into a pgRouting database.
+ osm2pgrouting is a command line tool that makes it easy to import OpenStreetMap data
+ into a pgRouting database. It builds the routing network topology automatically and
+ creates tables for feature types and road classes.
+ pgRouting has to be installed to be able to run osm2pgrouting.
