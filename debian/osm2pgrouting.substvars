@@ -1,2 +1,0 @@
-shlibs:Depends=libc6 (>= 2.4), libexpat1 (>= 1.95.8), libgcc1 (>= 1:4.1.1), libpq5 (>= 8.4~0cvs20090328), libstdc++6 (>= 4.1.1)
-misc:Depends=
