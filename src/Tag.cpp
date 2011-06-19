@@ -18,56 +18,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OSMDOCUMENT_H
-#define OSMDOCUMENT_H
-
-#include "Configuration.h"
+#include "stdafx.h"
+#include "Tag.h"
 
 namespace osm
 {
 
+Tag::Tag( std::string key, std::string value )
+:
+	key(key),
+	value(value)
 
-class Node;
-class Way;
-class Relation;
+{ }
 
-/**
-	An osm-document.
-*/
-class OSMDocument
+Tag::~Tag()
 {
-public:
-	//! Map, which saves the parsed nodes
-	std::map<long long, Node*> m_Nodes;
-	//! parsed ways
-	std::vector<Way*> m_Ways;
-	//! splitted ways
-	std::vector<Way*> m_SplittedWays;
-
-	std::vector<Relation*> m_Relations;
-
-
-	Configuration& m_rConfig;
-public:
-
-	//! Constructor
-	OSMDocument( Configuration& config);
-	//! Destructor
-	virtual ~OSMDocument();
-	//! add node to the map
-	void AddNode( Node* n );
-	//! add way to the map
-	void AddWay( Way* w );
-	//! find node by using an ID
-	Node* FindNode( long long nodeRefId ) const;
-	//! split the ways
-	void SplitWays();
-	//Node* getNode( long long nodeRefId );
-
-	void AddRelation( Relation* r );
-
-};
-
+}
 
 } // end namespace osm
-#endif

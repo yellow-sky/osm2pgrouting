@@ -21,7 +21,9 @@
 #include "stdafx.h"
 #include "OSMDocument.h"
 #include "Configuration.h"
+#include "Tag.h"
 #include "Node.h"
+#include "Relation.h"
 #include "Way.h"
 #include "math_functions.h"
 
@@ -37,6 +39,7 @@ OSMDocument::~OSMDocument()
 {
 	ez_mapdelete( m_Nodes );
 	ez_vectordelete( m_Ways );		
+	ez_vectordelete( m_Relations );		
 	ez_vectordelete( m_SplittedWays );
 }
 void OSMDocument::AddNode( Node* n )
@@ -47,6 +50,11 @@ void OSMDocument::AddNode( Node* n )
 void OSMDocument::AddWay( Way* w )
 {
 	m_Ways.push_back( w );
+}
+
+void OSMDocument::AddRelation( Relation* r )
+{
+	m_Relations.push_back( r );
 }
 
 Node* OSMDocument::FindNode( long long nodeRefId ) 
@@ -69,12 +77,11 @@ void OSMDocument::SplitWays()
 	{
 		Way* currentWay = *it++;
 		
+		// ITERATE THROUGH THE NODES
 		std::vector<Node*>::const_iterator it_node( currentWay->m_NodeRefs.begin());	
 		std::vector<Node*>::const_iterator last_node( currentWay->m_NodeRefs.end());
 		
 		Node* backNode = currentWay->m_NodeRefs.back();
-
-
 
 		while(it_node!=last_node)
 		{
@@ -83,11 +90,30 @@ void OSMDocument::SplitWays()
 			Node* secondNode=0;
 			Node* lastNode=0;
 			
-			Way* splitted_way = new Way( ++id, currentWay->visible );
+			Way* splitted_way = new Way( ++id, currentWay->visible, currentWay->osm_id );
 			splitted_way->name=currentWay->name;
 			splitted_way->type=currentWay->type;
 			splitted_way->clss=currentWay->clss;
 			splitted_way->oneway=currentWay->oneway;
+			
+			std::vector<Tag*>::iterator it_tag( currentWay->m_Tags.begin() );
+			std::vector<Tag*>::iterator last_tag( currentWay->m_Tags.end() );
+//			std::cout << "Number of tags: " << currentWay->m_Tags.size() << std::endl;
+//			std::cout << "First tag: " << currentWay->m_Tags.front()->key << ":" << currentWay->m_Tags.front()->value << std::endl;
+		
+			// ITERATE THROUGH THE TAGS
+		
+			while(it_tag!=last_tag)
+			{
+				Tag* tag = *it_tag++;
+
+				splitted_way->AddTag(tag);
+				
+			}
+			
+			
+			
+			
 
 	//GeometryFromText('MULTILINESTRING(('||x1||' '||y1||','||x2||' '||y2||'))',4326);
 			

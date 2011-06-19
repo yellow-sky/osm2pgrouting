@@ -18,54 +18,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OSMDOCUMENT_H
-#define OSMDOCUMENT_H
-
-#include "Configuration.h"
+#ifndef TAG_H
+#define TAG_H
 
 namespace osm
 {
 
-
-class Node;
-class Way;
-class Relation;
-
 /**
-	An osm-document.
+\code
+  <node id="122603925" 
+		lat="53.0780875" 
+		lon="8.1351704" 
+		user="artus70" visible="true" timestamp="2007-11-18T22:18:59+00:00"/>
+\endcode
 */
-class OSMDocument
+class Tag
 {
 public:
-	//! Map, which saves the parsed nodes
-	std::map<long long, Node*> m_Nodes;
-	//! parsed ways
-	std::vector<Way*> m_Ways;
-	//! splitted ways
-	std::vector<Way*> m_SplittedWays;
-
-	std::vector<Relation*> m_Relations;
-
-
-	Configuration& m_rConfig;
+	std::string key;
+	std::string value;
 public:
-
-	//! Constructor
-	OSMDocument( Configuration& config);
+	/**
+	 *	Construktor
+	 * 	@param id ID of the node
+	 *	@param lat latitude
+	 *	@param lon longitude
+	 */
+	Tag( std::string key="", std::string value="");
 	//! Destructor
-	virtual ~OSMDocument();
-	//! add node to the map
-	void AddNode( Node* n );
-	//! add way to the map
-	void AddWay( Way* w );
-	//! find node by using an ID
-	Node* FindNode( long long nodeRefId ) const;
-	//! split the ways
-	void SplitWays();
-	//Node* getNode( long long nodeRefId );
-
-	void AddRelation( Relation* r );
-
+	virtual ~Tag();
 };
 
 

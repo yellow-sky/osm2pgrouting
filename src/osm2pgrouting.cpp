@@ -25,6 +25,8 @@
 #include "OSMDocumentParserCallback.h"
 #include "Way.h"
 #include "Node.h"
+#include "Tag.h"
+#include "Relation.h"
 #include "Export2DB.h"
 
 using namespace osm;
@@ -42,7 +44,9 @@ void _error()
 				cout << "-host <host>  -- host of your postgresql database (default: 127.0.0.1)" << endl;
 				cout << "-port <port> -- port of your database (default: 5432)" << endl;
 				cout << "-passwd <passwd> --  password for database access" << endl;
-				cout << "-clean -- drop peviously created tables" << endl;
+				cout << "-clean -- drop previously created tables" << endl;
+                cout << "-skipnodes -- don't import the nodes table" << endl;
+
 					
 }
 
@@ -55,8 +59,9 @@ int main(int argc, char* argv[])
 	std::string port="5432";
 	std::string dbname;
 	std::string passwd;
+	bool skipnodes = false;
 	bool clean = false;
-	if(argc >=7 && argc <=13)
+	if(argc >=7 && argc <=17)
 	{
 		int i=1;
 		while( i<argc)
@@ -102,6 +107,10 @@ int main(int argc, char* argv[])
 			{
 				clean = true;
 			}
+			else if(strcmp(argv[i],"-skipnodes")==0)
+            {
+                skipnodes = true;
+            }
 			else
 			{
 				cout << "unknown paramer: " << argv[i] << endl;
@@ -160,51 +169,30 @@ int main(int argc, char* argv[])
 
 		if( clean )
 		{
+			cout << "Dropping tables..." << endl;
+
 			test.dropTables();
 		}
-		
+
+		cout << "Creating tables..." << endl;
 		test.createTables();
-		
-		std::map<std::string, Type*>& types= config->m_Types;
-		std::map<std::string, Type*>::iterator tIt(types.begin());
-		std::map<std::string, Type*>::iterator tLast(types.end());
-		
-		while(tIt!=tLast)
-		{
-			Type* type = (*tIt++).second;
-			test.exportType(type);
 
-			std::map<std::string, Class*>& classes= type->m_Classes;
-			std::map<std::string, Class*>::iterator cIt(classes.begin());
-			std::map<std::string, Class*>::iterator cLast(classes.end());
+		cout << "Adding tag types and classes to database..." << endl;
+		test.exportTypesWithClasses(config->m_Types);
 
-			while(cIt!=cLast)
-			{
-				Class* clss = (*cIt++).second;
-				test.exportClass(type, clss);
-			}
-		}
+		cout << "Adding relations to database..." << endl;
+		test.exportRelations(document->m_Relations, config);
 		
+		// Optional user argument skipnodes will not add nodes to the database (saving a lot of time if not necessary)
+		if ( !skipnodes) {
+			cout << "Adding nodes to database..." << endl;
+			test.exportNodes(document->m_Nodes);
+		}
 
-		std::map<long long, Node*>& nodes= document->m_Nodes;
-		std::map<long long, Node*>::iterator it(nodes.begin());
-		std::map<long long, Node*>::iterator last(nodes.end());
+		cout << "Adding ways to database..." << endl;
+		test.exportWays(document->m_SplittedWays, config);
 		
-		while(it!=last)
-		{
-			Node* node = (*it++).second;
-			test.exportNode(node->id,node->lon, node->lat, node->numsOfUse);
-		}
-		
-		std::vector<Way*>& ways= document->m_SplittedWays;
-		std::vector<Way*>::iterator it_way( ways.begin() );
-		std::vector<Way*>::iterator last_way( ways.end() );	
-		while( it_way!=last_way )
-		{
-			Way* pWay = *it_way++;
-			test.exportWay(pWay);
-		}
-		cout << "create topology" << endl;
+		cout << "Creating topology..." << endl;
 		test.createTopology();
 	}	
 	
@@ -253,4 +241,3 @@ int main(int argc, char* argv[])
 	//getline( cin, n );
 	return 0;
 }
-

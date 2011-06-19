@@ -17,54 +17,56 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-#ifndef OSMDOCUMENT_H
-#define OSMDOCUMENT_H
-
-#include "Configuration.h"
+#ifndef RELATION_H
+#define RELATION_H
 
 namespace osm
 {
-
-
-class Node;
-class Way;
-class Relation;
+	class Way;
+	class Tag;
 
 /**
-	An osm-document.
+\code
+ <way id="20215432" visible="true" timestamp="2008-01-09T22:35:16+00:00" user="Pferdo">
+    <nd ref="213794929"/>
+    <nd ref="213795470"/>
+    <nd ref="213795483"/>
+    <nd ref="213795493"/>
+    <nd ref="213795506"/>
+    <nd ref="213795517"/>
+    <nd ref="213795527"/>
+    <nd ref="213795541"/>
+    <nd ref="213795552"/>
+    <nd ref="213795561"/>
+    <nd ref="213795571"/>
+    <tag k="name" v="Pfänderweg"/>
+    <tag k="created_by" v="JOSM"/>
+    <tag k="highway" v="residential"/>
+  </way>
+\endcode
 */
-class OSMDocument
+class Relation
 {
 public:
-	//! Map, which saves the parsed nodes
-	std::map<long long, Node*> m_Nodes;
-	//! parsed ways
-	std::vector<Way*> m_Ways;
-	//! splitted ways
-	std::vector<Way*> m_SplittedWays;
+	long long id;
+    std::string name;
+	std::vector<long long> m_WayRefs;
+	std::vector<Tag*> m_Tags;
 
-	std::vector<Relation*> m_Relations;
-
-
-	Configuration& m_rConfig;
 public:
-
-	//! Constructor
-	OSMDocument( Configuration& config);
+	/** 
+	 *	Constructor
+	 *	@param id ID of the way
+	 */
+	Relation( long long id );
 	//! Destructor
-	virtual ~OSMDocument();
-	//! add node to the map
-	void AddNode( Node* n );
-	//! add way to the map
-	void AddWay( Way* w );
-	//! find node by using an ID
-	Node* FindNode( long long nodeRefId ) const;
-	//! split the ways
-	void SplitWays();
-	//Node* getNode( long long nodeRefId );
-
-	void AddRelation( Relation* r );
+	~Relation();
+	/**
+	 *	saves the nodes of the way  
+	 *	@param pNode node
+	 */
+	void AddWayRef( long long pID );
+	void AddTag( Tag* t );
 
 };
 

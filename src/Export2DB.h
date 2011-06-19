@@ -23,10 +23,13 @@
 
 //#include "postgresql/libpq-fe.h"
 #include "libpq-fe.h"
+#include "Tag.h"
 #include "Node.h"
 #include "Way.h"
+#include "Relation.h"
 #include "Type.h"
 #include "Class.h"
+#include "Configuration.h"
 
 using namespace osm;
 
@@ -58,13 +61,12 @@ public:
  	//! creates needed tables
  	void createTables();
  	//! exports nodes to the database
- 	void exportNode(long long id, double lon, double lat, ushort numOfUse );
+ 	void exportNodes(std::map<long long, Node*>& nodes);
  	//! exports ways to the database
- 	void exportWay(Way* way);
-
- 	void exportType(Type* type);
- 	void exportClass(Type* type, Class* clss);
-
+ 	void exportWays(std::vector<Way*>& ways, Configuration* config);
+ 	void exportRelations(std::vector<Relation*>& relations, Configuration* config);
+	
+ 	void exportTypesWithClasses(std::map<std::string, Type*>& types);
 
  	/** 
  	 * creates the topology
