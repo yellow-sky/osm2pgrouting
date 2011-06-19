@@ -1,3 +1,43 @@
+osm2pgrouting (0.2-1) natty; urgency=low
+
+  [ Daniel Kastl ]
+  * added debian directory to branch for packaging
+  * added tabs
+
+  [ jordanderson ]
+  * No changes
+  * Relations and tags feature
+  * Added Tag and Relation files
+  * Add relations and tags feature
+  * Deleted binary file
+
+  [ Shaun Walbridge ]
+  * fix typo: s/peviously/previously/
+
+  [ J Kishore kumar ]
+  * Changed exportNode signature to be consistent with other functions
+  * Removed warning by explicitly typecasting
+  * Added extra local postgresql library locations to Makefile
+  * Renovated makefile to make only if necessary
+  * Added .gitignore to hide binaries
+  * Replaced INSERT with COPY for exporting to database.
+
+  [ jordanderson ]
+  * Head off any \n's or \r's in the way name
+  * Limit a way's name to only the first 200 characters to avoid COPY error
+
+  [ Daniel Kastl ]
+  * Edited AUTHORS.txt via GitHub
+
+  [ jordanderson ]
+  * Increase the valid maximum number of arguments
+
+  [ Daniel Kastl ]
+  * commented log output to decrease number of messages
+  * cleaned up directory
+
+ -- Daniel Kastl <daniel@georepublic.de>  Sun, 19 Jun 2011 21:17:58 +0900
+
 osm2pgrouting (0.1-4) lucid; urgency=low
 
   * Added copyright information
