@@ -81,7 +81,7 @@ void Export2DB::createTables()
         }
 
 	std::cout << "Nodes table created" << std::endl;
-	result = PQexec(mycon, "CREATE TABLE ways (gid integer, class_id integer not null, length double precision, name char(200), x1 double precision, y1 double precision, x2 double precision,y2 double precision, reverse_cost double precision,rule text, to_cost double precision, osm_id integer); SELECT AddGeometryColumn('ways','the_geom',4326,'MULTILINESTRING',2);");
+	result = PQexec(mycon, "CREATE TABLE ways (gid integer, class_id integer not null, length double precision, name char(200), x1 double precision, y1 double precision, x2 double precision,y2 double precision, reverse_cost double precision,rule text, to_cost double precision, osm_id integer); SELECT AddGeometryColumn('ways','the_geom',4326,'LINESTRING',2);");
 	if (PQresultStatus(result) != PGRES_COMMAND_OK)
         {
 				 std::cerr << PQresultStatus(result);
@@ -304,11 +304,12 @@ void Export2DB::exportWays(std::vector<Way*>& ways, Configuration* config)
 		row_data += "\t";
 	  	if(!way->name.empty())
 	  	{
-	  	  std::string escaped_name = way->name;
-  			boost::replace_all(escaped_name, "\t", "\\\t");
-            boost::replace_all(escaped_name, "\n", "");
-            boost::replace_all(escaped_name, "\r", "");
-			row_data += escaped_name.substr(0,199);
+        std::string escaped_name = way->name;
+        boost::replace_all(escaped_name, "\t", "\\\t");
+        boost::replace_all(escaped_name, "\n", "");
+        boost::replace_all(escaped_name, "\r", "");
+        boost::replace_all(escaped_name, "\\", "");
+        row_data += escaped_name.substr(0,199);
 	  	}
 	  	row_data += "\n";
 		PQputline(mycon, row_data.c_str());
