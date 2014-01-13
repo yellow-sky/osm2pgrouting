@@ -8,3 +8,6 @@ tools/vagrant/packaging.sh
 .project
 .cproject
 .vagrant
+.kdev4/
+*.kdev4
+build*

@@ -65,7 +65,9 @@ public:
 	//Node* getNode( long long nodeRefId );
 
 	void AddRelation( Relation* r );
-
+	
+	void Clear();
+	Configuration* GetConfig();
 };
 
 

@@ -25,7 +25,6 @@
 #include "Way.h"
 #include "Node.h"
 #include "utils.h"
-
 // define here, which streetstype you want to parse
 // for applying this filter, compile with "DISTRICT" as flag (g++ -DRESTRICT)
 //#define _FILTER if(m_pActWay->highway == "motorway" || m_pActWay->highway == "primary" || m_pActWay->highway == "secondary")
@@ -344,13 +343,39 @@ void OSMDocumentParserCallback::EndElement( const char* name )
 		//#endif
 
 		m_pActWay = 0;
+		
+		
+  
 	}
 	// THIS IS THE RELATION CODE...
 	else if( strcmp(name,"relation") == 0 )
 	{
 		m_rDocument.AddRelation( m_pActRelation );
 		m_pActRelation = 0;		
+		
+		m_iProcessed++;
+		if (m_iProcessed > 100 && !m_pActWay && !m_pActRelation)
+		{
+		  std::cout << "1k was processed!" << " Try to save";
+		  //############# Export2DB
+		  
+		    std::cout << "Split ways" << std::endl;
+		    m_rDocument.SplitWays();
 
+		    std::cout << "Adding relations to database..." << std::endl;
+		    m_pExporter->exportRelations(m_rDocument.m_Relations, m_rDocument.GetConfig());
+
+		    // Optional user argument skipnodes will not add nodes to the database (saving a lot of time if not necessary)
+		    std::cout << "Adding nodes to database..." << std::endl;
+		    m_pExporter->exportNodes(m_rDocument.m_Nodes);
+		   
+		    std::cout << "Adding ways to database..." << std::endl;
+		    m_pExporter->exportWays(m_rDocument.m_SplittedWays, m_rDocument.GetConfig());
+		  
+		    m_rDocument.Clear();
+		  //#############
+		   m_iProcessed=0;
+		}
 		// std::cout<<"Adding relation: "<<m_pActRelation->id<<std::endl;
 	}
 	// END OF THE RELATIONS CODE

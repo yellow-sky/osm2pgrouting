@@ -169,4 +169,24 @@ void OSMDocument::SplitWays()
 
 } // end SplitWays
 
+void OSMDocument::Clear()
+{
+  ez_mapdelete( m_Nodes );
+  ez_vectordelete( m_Ways );		
+  ez_vectordelete( m_Relations );		
+  ez_vectordelete( m_SplittedWays );
+  m_Nodes.clear();
+  m_Ways.clear();
+  m_Relations.clear();
+  m_SplittedWays.clear();
+  m_SplittedWays.clear();
+}
+
+Configuration* OSMDocument::GetConfig()
+{
+  return &m_rConfig;
+}
+
+
+
 } // end namespace osm

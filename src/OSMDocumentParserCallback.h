@@ -23,6 +23,7 @@
 
 #include <string.h>
 #include "XMLParser.h"
+#include "Export2DB.h"
 
 namespace osm
 {
@@ -41,6 +42,9 @@ class OSMDocumentParserCallback : public xml::XMLParserCallback
 	//! current way, which will be parsed
 	Way* m_pActWay;
 	Relation* m_pActRelation;
+	Export2DB* m_pExporter;
+	
+	int m_iProcessed;
 
 	virtual void StartElement( const char *name, const char** atts );
 
@@ -63,13 +67,14 @@ public:
 	/**
 	 *	Constructor
 	 */
-	OSMDocumentParserCallback( OSMDocument& doc )
+	OSMDocumentParserCallback( OSMDocument& doc, Export2DB* exp)
 	:
 		m_rDocument( doc ),
 		m_pActWay( 0 ),
 		m_pActRelation( 0 )
-
 	{
+	  m_pExporter = exp;
+	  m_pExporter = 0;
 	}
 
 }; // class OSMDocumentParserCallback
